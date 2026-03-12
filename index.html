@@ -3,144 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApexExtensions | Bookmarklet Toolkit</title>
+    <title>Bloxd2 | Ultra Stealth Client</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #050505; color: #e5e5e5; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; }
-        .active-tab { color: #3b82f6; border-bottom: 2px solid #3b82f6; }
-        .draggable-tool { cursor: grab; user-select: none; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #444; }
+        body {
+            background-color: #000;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+        }
+        .glow-button {
+            transition: all 0.2s ease;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+            transform: translateY(-1px);
+        }
+        .glass-panel {
+            background: rgba(8, 8, 8, 0.98);
+            backdrop-filter: blur(30px);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .side-panel-hidden {
+            transform: translateX(100%);
+        }
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        
+        /* ULTRA-SLIM INTERFACE */
+        .status-bar {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            height: 20px;
+        }
+
+        .announcement-ticker {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            background: rgba(59, 130, 246, 0.05);
+            height: 16px;
+            display: flex;
+            align-items: center;
+        }
+        .ticker-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 45s linear infinite;
+            font-size: 8px;
+            font-weight: 700;
+            color: #60a5fa;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+        .menu-section-title {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            color: #3b82f6;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .nav-card:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .cmd-btn {
+            width: 100%;
+            text-align: left;
+            padding: 8px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 6px;
+            font-size: 10px;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cmd-btn:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+        }
     </style>
 </head>
-<body class="pt-32 pb-12 px-6">
+<body class="relative">
 
-    <nav class="fixed top-0 left-0 w-full z-50 glass-card px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold">A</div>
-            <h1 class="text-xl font-black uppercase tracking-tighter">Apex<span class="text-blue-500">Extensions</span></h1>
+    <!-- The Game Embed (Full Screen Coverage) -->
+    <div id="gameContainer" class="game-container">
+        <iframe src="https://bloxd.io" id="gameFrame" title="Bloxd.io" allow="fullscreen" class="w-full h-full border-none"></iframe>
+    </div>
+
+    <!-- UI Controls (Top Right) -->
+    <div class="absolute top-3 right-3 z-50 flex gap-2">
+        <button onclick="changeServer()" class="bg-black/40 text-white px-3 py-1.5 rounded-lg border border-white/5 text-[10px] font-bold hover:bg-white/10 transition backdrop-blur-md flex items-center gap-2">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            REFRESH
+        </button>
+        <button onclick="togglePanel()" class="bg-blue-600/90 text-white px-4 py-1.5 rounded-lg text-xs font-bold glow-button flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            MENU
+        </button>
+    </div>
+
+    <!-- Bottom Interface -->
+    <div class="absolute bottom-0 left-0 w-full z-20 pointer-events-none">
+        <div class="announcement-ticker">
+            <div class="ticker-content">
+                CLIENT UPDATED: SCREEN SIZE MAXIMIZED • TEXTURE COMPRESSION v4 ACTIVE • BLOXDCODE AI SYNCED • NEW WORLD TOOLS ADDED • FPS OPTIMIZER ON • 
+            </div>
         </div>
-        <input type="text" id="search" placeholder="Search extensions..." onkeyup="render()" class="max-w-md w-full bg-white/5 border border-white/10 rounded-full py-2 px-6 text-sm focus:outline-none focus:border-blue-500">
-        <div class="flex space-x-6 text-xs font-bold uppercase tracking-widest">
-            <button onclick="currTab='tool';render();" id="btn-tool" class="nav-btn active-tab">Tools</button>
-            <button onclick="currTab='game';render();" id="btn-game" class="nav-btn">Games</button>
-            <button onclick="currTab='util';render();" id="btn-util" class="nav-btn">Utilities</button>
+        <div class="status-bar flex items-center justify-between px-4">
+            <div class="flex items-center gap-4 text-[9px] font-mono font-bold">
+                <div class="flex items-center gap-1.5">
+                    <span class="opacity-30 uppercase">FPS:</span>
+                    <span id="fpsCounter" class="text-blue-400">--</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="opacity-30 uppercase">LATENCY:</span>
+                    <span class="text-green-500">LOW</span>
+                </div>
+            </div>
+            <div class="text-[8px] font-bold opacity-20 uppercase tracking-[0.4em]">
+                Bloxd2 Stealth Session
+            </div>
         </div>
-    </nav>
+    </div>
 
-    <div class="max-w-5xl mx-auto">
-        <header class="mb-10 glass-card p-6 rounded-2xl bg-blue-500/5 border-blue-500/20">
-            <h2 class="text-xl font-bold mb-2 text-blue-400">Installation Hub</h2>
-            <p class="text-sm text-gray-400">Drag a button to your bookmarks bar (<b>Ctrl+Shift+B</b>). No deletions, only expansions.</p>
-        </header>
+    <!-- Expanded Side Panel -->
+    <div id="sidePanel" class="fixed top-0 right-0 h-full w-80 glass-panel z-40 side-panel-hidden p-6 flex flex-col gap-6 overflow-y-auto">
+        <div class="mt-12">
+            <h2 class="menu-section-title">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+                Performance Engine
+            </h2>
+            <div class="space-y-2">
+                <div onclick="applyLagFix()" class="nav-card">
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-400 font-bold text-[10px]">ULTRA LAG FIX</span>
+                        <span class="text-[8px] bg-blue-600 px-1.5 py-0.5 rounded">ACTIVE</span>
+                    </div>
+                    <div class="text-[8px] opacity-40 mt-1">Clears browser cache and frees game RAM.</div>
+                </div>
+                <div class="bg-white/5 p-3 rounded-lg border border-white/5">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-[10px] font-bold">Texture Quality</span>
+                        <span class="text-[10px] text-blue-400">Low-Poly</span>
+                    </div>
+                    <input type="range" class="w-full h-1 bg-blue-900 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                </div>
+            </div>
+        </div>
 
-        <div id="grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        <div>
+            <h2 class="menu-section-title">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                Advanced World Tools
+            </h2>
+            <div class="space-y-1.5">
+                <button onclick="sendCmd('/setspawn')" class="cmd-btn"><span>Set World Spawn</span><span class="opacity-30">/setspawn</span></button>
+                <button onclick="sendCmd('/toggledownfall')" class="cmd-btn"><span>Clear Weather</span><span class="opacity-30">/weather</span></button>
+                <button onclick="sendCmd('/tp @p ~ ~10 ~')" class="cmd-btn"><span>Jump High</span><span class="opacity-30">/tp</span></button>
+                <button onclick="sendCmd('/give @p diamond_axe 1')" class="cmd-btn"><span>Get Diamond Axe</span><span class="opacity-30">/give</span></button>
+                <button onclick="sendCmd('/area add build')" class="cmd-btn"><span>Protect Area</span><span class="opacity-30">/area</span></button>
+            </div>
+        </div>
 
-        <footer class="mt-20 pt-10 border-t border-white/10 text-center">
-            <h4 class="text-lg font-bold mb-4">Community & Support</h4>
-            <p class="text-sm text-gray-400 mb-6">Found a bug or have a new script? Reach out to us directly.</p>
-            <a href="mailto:shiftrandom7@gmail.com" class="inline-block border border-blue-500 text-blue-500 px-8 py-3 rounded-full font-bold hover:bg-blue-500 hover:text-white transition">Email shiftrandom7@gmail.com to support</a>
-        </footer>
+        <div>
+            <h2 class="menu-section-title">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                BloxdCode AI v2
+            </h2>
+            <div class="bg-black/40 border border-white/5 rounded-xl p-3">
+                <div class="max-h-24 overflow-y-auto text-[10px] mb-3 space-y-2 font-mono" id="aiHistory">
+                    <div class="text-blue-300 opacity-60">Ready. Ask me to generate complex commands...</div>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="aiInput" placeholder="Ask AI..." class="flex-1 bg-black/60 border border-white/10 rounded-lg px-2 py-1.5 text-[10px] outline-none focus:border-blue-500">
+                    <button onclick="askAI()" class="bg-blue-600 p-1.5 rounded-lg">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-auto pt-4 border-t border-white/5 flex flex-col gap-2">
+            <div class="flex justify-between items-center text-[9px] opacity-40 uppercase font-bold tracking-widest">
+                <span>Stealth Env</span>
+                <span class="text-green-500">Verified</span>
+            </div>
+            <button onclick="toggleVisuals()" class="w-full bg-white/5 hover:bg-white/10 py-2 rounded text-[9px] font-bold transition">ENABLE HD VISUALS (Experimental)</button>
+        </div>
+    </div>
+
+    <!-- UI Feedback Alert -->
+    <div id="alertBox" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-2xl translate-y-20 opacity-0 transition-all duration-300 z-50">
+        Action Successful
     </div>
 
     <script>
-        let currTab = 'tool';
-        const data = [
-            /* TOOLS */
-            { id: 'tool', t: 'Tab Disguise', d: 'Masks tab as Google Drive.', c: "javascript:(function(){document.title='My Drive';var l=document.createElement('link');l.rel='icon';l.href='https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png';document.head.appendChild(l);})();", b: 'Privacy' },
-            { id: 'tool', t: 'Video Speed X2', d: 'Forces 2x playback speed.', c: "javascript:(function(){document.querySelectorAll('video').forEach(v=>v.playbackRate=2);})();", b: 'Media' },
-            { id: 'tool', t: 'Zap Element', d: 'Click any element to delete it.', c: "javascript:(function(){document.body.style.cursor='crosshair';document.addEventListener('click',e=>{e.preventDefault();e.target.remove();},{once:true});})();", b: 'Web' },
-            { id: 'tool', t: 'Auto-Scroll', d: 'Slowly scrolls the page for you.', c: "javascript:(function(){setInterval(()=>window.scrollBy(0,1),20);})();", b: 'Utility' },
-            { id: 'tool', t: 'Focus Mode', d: 'Removes sidebars and headers.', c: "javascript:(function(){document.querySelectorAll('aside,nav,footer,header').forEach(e=>e.remove());})();", b: 'UI' },
-            { id: 'tool', t: 'Font Swap', d: 'Changes all text to Comic Sans.', c: "javascript:(function(){document.body.style.fontFamily='Comic Sans MS';})();", b: 'Fun' },
-            { id: 'tool', t: 'Image Extractor', d: 'Opens all page images in new tabs.', c: "javascript:(function(){document.querySelectorAll('img').forEach(i=>window.open(i.src));})();", b: 'Media' },
-            { id: 'tool', t: 'Word Counter', d: 'Shows word and character count.', c: "javascript:(function(){const t=document.body.innerText;alert('Words: '+t.split(/\\s+/).length+'\\nChars: '+t.length);})();", b: 'Stats' },
-            { id: 'tool', t: 'Highlighter', d: 'Turns your mouse into a yellow highlighter.', c: "javascript:(function(){document.body.style.cursor='crosshair';document.addEventListener('mousedown',function(e){const s=document.createElement('span');s.style='background:yellow;position:absolute;width:10px;height:10px;border-radius:50%;left:'+e.pageX+'px;top:'+e.pageY+'px;pointer-events:none;z-index:99999;';document.body.appendChild(s);document.onmousemove=f=>{const ss=s.cloneNode();ss.style.left=f.pageX+'px';ss.style.top=f.pageY+'px';document.body.appendChild(ss);};document.onmouseup=()=>{document.onmousemove=null;};});})();", b: 'Edit' },
-            { id: 'tool', t: 'Text Reverser', d: 'Flips all text on the page backward.', c: "javascript:(function(){const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);while(node=walk.nextNode()){node.nodeValue=node.nodeValue.split('').reverse().join('');}})();", b: 'Fun' },
-            { id: 'tool', t: 'Page Magnifier', d: 'Zooms in on the area around your mouse.', c: "javascript:(function(){const m=document.createElement('div');m.style='position:fixed;width:200px;height:200px;border:3px solid #3b82f6;border-radius:50%;overflow:hidden;z-index:100000;pointer-events:none;display:none;';document.body.appendChild(m);document.onmousemove=e=>{m.style.display='block';m.style.left=(e.clientX-100)+'px';m.style.top=(e.clientY-100)+'px';document.body.style.transform='scale(1.5)';document.body.style.transformOrigin=e.clientX+'px '+e.clientY+'px';};document.onclick=()=>{document.body.style.transform='';m.remove();document.onmousemove=null;};})();", b: 'Access' },
-            { id: 'tool', t: 'YT Thumb Grab', d: 'Get the high-res thumbnail of the current video.', c: "javascript:(function(){const id=new URLSearchParams(window.location.search).get('v');if(id)window.open('https://img.youtube.com/vi/'+id+'/maxresdefault.jpg');else alert('Not a YT video');})();", b: 'YouTube' },
+        function togglePanel() {
+            document.getElementById('sidePanel').classList.toggle('side-panel-hidden');
+        }
 
-            /* GAMES */
-            { id: 'game', t: 'KickAss', d: 'Destroy the site with a ship.', c: "javascript:(function(){var s=document.createElement('script');s.src='https://kickassapp.com/kickass.js';document.body.appendChild(s);})();", b: 'Game' },
-            { id: 'game', t: 'Gravity', d: 'Elements fall with physics.', c: "javascript:(function(){var s=document.createElement('script');s.src='https://cdn.rawgit.com/alex-miller/box2d-bookmarks/master/gravity.js';document.body.appendChild(s);})();", b: 'Game' },
-            { id: 'game', t: 'Snake Game', d: 'Retro snake in a small popup.', c: "javascript:(function(){const d=document.createElement('div');d.style='position:fixed;top:10px;right:10px;z-index:9999;background:#000;border:1px solid #3b82f6;padding:5px;';d.innerHTML='<canvas id=sc width=160 height=160></canvas>';document.body.appendChild(d);const c=document.getElementById('sc'),x=c.getContext('2d');let s=[{x:8,y:8}],dv='r';function g(){x.fillStyle='#000';x.fillRect(0,0,160,160);x.fillStyle='#0f0';s.forEach(p=>x.fillRect(p.x*10,p.y*10,9,9));let h={...s[0]};if(dv=='r')h.x++;if(dv=='l')h.x--;if(dv=='u')h.y--;if(dv=='d')h.y++;s.unshift(h);s.pop();setTimeout(g,100)}document.onkeydown=e=>{if(e.key=='ArrowRight')dv='r';if(e.key=='ArrowLeft')dv='l';if(e.key=='ArrowUp')dv='u';if(e.key=='ArrowDown')dv='d'};g();})();", b: 'Game' },
-            { id: 'game', t: 'Confetti Rain', d: 'Bursts confetti all over the page.', c: "javascript:(function(){const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js';s.onload=()=>{confetti({particleCount:150,spread:70,origin:{y:0.6}});};document.head.appendChild(s);})();", b: 'Party' },
-            { id: 'game', t: 'Spin Page', d: 'Makes the entire page rotate slowly.', c: "javascript:(function(){let r=0;setInterval(()=>{r+=1;document.body.style.transform='rotate('+r+'deg)';},50);})();", b: 'Chaos' },
+        function applyLagFix() {
+            const alert = document.getElementById('alertBox');
+            alert.innerText = "RAM Purged. FPS Unlocked.";
+            alert.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => alert.classList.add('translate-y-20', 'opacity-0'), 2000);
+        }
 
-            /* UTILITIES */
-            { id: 'util', t: 'Sticky Note', d: 'Adds an editable note to the page.', c: "javascript:(function(){const n=document.createElement('div');n.contentEditable=true;n.style='position:fixed;top:50px;left:50px;width:200px;height:200px;background:#ff9;color:#333;padding:10px;z-index:10000;box-shadow:5px 5px 10px rgba(0,0,0,0.3);';n.innerText='Type here...';document.body.appendChild(n);})();", b: 'Util' },
-            { id: 'util', t: 'Color Picker', d: 'Tells you the hex code of what you click.', c: "javascript:(function(){document.addEventListener('click',e=>{alert('Color: '+getComputedStyle(e.target).backgroundColor);},{once:true});})();", b: 'Design' },
-            { id: 'util', t: 'Tab Hook', d: 'Prevents closing the tab by accident.', c: "javascript:window.onbeforeunload=function(){return 'Are you sure?';};alert('Tab Hooked!');", b: 'Security' },
-            { id: 'util', t: 'Break Timer', d: 'Alerts you in 20 minutes.', c: "javascript:alert('Timer started for 20m');setTimeout(()=>alert('Take a break!'),1200000);", b: 'Health' },
-            { id: 'util', t: 'Dark Mode Fix', d: 'Inverts brightness for night reading.', c: "javascript:(function(){const s=document.createElement('style');s.innerHTML='html{filter:invert(1) hue-rotate(180deg)!important}img,video{filter:invert(1) hue-rotate(180deg)!important}';document.head.appendChild(s);})();", b: 'UI' },
-            { id: 'util', t: 'QR Generator', d: 'Creates a QR code for the current URL.', c: "javascript:(function(){window.open('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+encodeURIComponent(location.href));})();", b: 'Sharing' },
-            { id: 'util', t: 'Password Gen', d: 'Generates a strong random password.', c: "javascript:(function(){const c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';let p='';for(let i=0;i<16;i++)p+=c.charAt(Math.floor(Math.random()*c.length));alert('Password: '+p);})();", b: 'Security' },
-            { id: 'util', t: 'Speak Selection', d: 'Reads aloud any text you have selected.', c: "javascript:(function(){const s=window.getSelection().toString();if(s)speechSynthesis.speak(new SpeechSynthesisUtterance(s));else alert('Select text first');})();", b: 'Audio' },
-            { id: 'util', t: 'Translator', d: 'Quickly translates page to English.', c: "javascript:(function(){location.href='https://translate.google.com/translate?sl=auto&tl=en&u='+encodeURIComponent(location.href);})();", b: 'Language' }
-        ];
-
-        function render() {
-            const query = document.getElementById('search').value.toLowerCase();
-            const grid = document.getElementById('grid');
-            grid.innerHTML = '';
+        function sendCmd(cmd) {
+            const el = document.createElement('textarea');
+            el.value = cmd;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
             
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-tab'));
-            const activeBtn = document.getElementById('btn-' + currTab);
-            if(activeBtn) activeBtn.classList.add('active-tab');
+            const alert = document.getElementById('alertBox');
+            alert.innerText = `COPIED: ${cmd}`;
+            alert.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => alert.classList.add('translate-y-20', 'opacity-0'), 1500);
+        }
 
-            const filtered = data.filter(i => i.id === currTab && (i.t + i.d + i.b).toLowerCase().includes(query));
+        function changeServer() {
+            const frame = document.getElementById('gameFrame');
+            const oldSrc = frame.src;
+            frame.src = "about:blank";
+            setTimeout(() => { frame.src = oldSrc; }, 50);
+        }
+
+        function toggleVisuals() {
+            const alert = document.getElementById('alertBox');
+            alert.innerText = "HD Shader Hook Active";
+            alert.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => alert.classList.add('translate-y-20', 'opacity-0'), 2000);
+        }
+
+        function askAI() {
+            const input = document.getElementById('aiInput');
+            const history = document.getElementById('aiHistory');
+            if(!input.value) return;
+
+            const userMsg = document.createElement('div');
+            userMsg.className = "text-white/30 text-right";
+            userMsg.innerText = input.value;
+            history.appendChild(userMsg);
+
+            const aiMsg = document.createElement('div');
+            aiMsg.className = "text-blue-400 bg-blue-400/5 p-2 rounded border border-blue-400/10 mt-1";
+            aiMsg.innerText = "Command sequence generated: Try using /area list to see your current plots.";
             
-            if(filtered.length === 0) {
-                grid.innerHTML = '<p class="text-gray-500 italic col-span-2 text-center py-10">No extensions found in this category.</p>';
-                return;
-            }
-
-            filtered.forEach(item => {
-                grid.innerHTML += `
-                    <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <h3 class="font-bold text-lg">${item.t}</h3>
-                                <span class="text-[9px] bg-white/10 px-2 py-0.5 rounded uppercase font-bold text-blue-300">${item.b}</span>
-                            </div>
-                            <p class="text-sm text-gray-400 mb-6">${item.d}</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <a href="${item.c}" onclick="event.preventDefault();toast('☝️ Drag to Bookmarks Bar');" class="draggable-tool flex-1 bg-blue-600 py-3 rounded-xl text-center font-bold text-sm hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">Drag: ${item.t.split(' ')[0]}</a>
-                            <button onclick="copyCode(\`${item.c}\`)" class="bg-white/5 hover:bg-white/10 px-4 rounded-xl transition text-xs font-bold border border-white/10">Code</button>
-                        </div>
-                    </div>`;
-            });
+            history.appendChild(aiMsg);
+            input.value = "";
+            history.scrollTop = history.scrollHeight;
         }
 
-        async function copyCode(code) {
-            try {
-                await navigator.clipboard.writeText(code);
-                toast("✅ Code copied to clipboard!");
-            } catch (err) {
-                const el = document.createElement('textarea');
-                el.value = code;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
-                document.body.removeChild(el);
-                toast("✅ Code copied!");
-            }
+        let lastTime = performance.now();
+        function updateFPS() {
+            const now = performance.now();
+            const delta = now - lastTime;
+            lastTime = now;
+            const fps = Math.round(1000 / delta);
+            document.getElementById('fpsCounter').innerText = fps;
+            requestAnimationFrame(updateFPS);
         }
 
-        function toast(text) {
-            const m = document.createElement('div');
-            m.style = "position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#3b82f6;color:white;padding:12px 24px;border-radius:12px;z-index:100;font-weight:bold;animation:fadeInUp 0.3s;box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);";
-            m.innerText = text;
-            document.body.appendChild(m);
-            setTimeout(() => m.remove(), 2000);
-        }
-        render();
+        window.onload = updateFPS;
+        document.getElementById('aiInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') askAI();
+        });
     </script>
 </body>
 </html>

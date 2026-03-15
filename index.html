@@ -3,345 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloxd2 | Ultra Stealth Client</title>
+    <title>BloxdCenter | Build Repository</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.5);
-        }
         body {
-            background-color: #000;
-            color: #e5e7eb;
-            font-family: 'Inter', sans-serif;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
-            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #040406;
+            color: #d1d5db;
+            overflow-x: hidden;
         }
-        .glow-button {
-            transition: all 0.2s ease;
-            box-shadow: 0 0 15px var(--primary-glow);
+        .glass {
+            background: rgba(15, 15, 20, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .glow-button:hover {
-            box-shadow: 0 0 25px var(--primary-glow);
-            transform: translateY(-1px);
+        .tab-content {
+            display: none;
         }
-        .glass-panel {
-            background: rgba(8, 8, 8, 0.98);
-            backdrop-filter: blur(30px);
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        .tab-content.active {
+            display: block;
         }
-        .side-panel-hidden {
-            transform: translateX(100%);
+        .nav-active {
+            color: #60a5fa;
+            border-bottom: 2px solid #3b82f6;
         }
-        .game-container {
-            width: 100vw;
-            height: 100vh;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 0;
+        .node-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        /* ULTRA-SLIM INTERFACE */
-        .status-bar {
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            height: 20px;
-        }
-
-        .announcement-ticker {
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-            background: rgba(59, 130, 246, 0.05);
-            height: 16px;
-            display: flex;
-            align-items: center;
-        }
-        .ticker-content {
-            display: inline-block;
-            padding-left: 100%;
-            animation: ticker 45s linear infinite;
-            font-size: 8px;
-            font-weight: 700;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-        }
-        @keyframes ticker {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
-        }
-        .menu-section-title {
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.15em;
-            color: var(--primary);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .nav-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 8px;
-            padding: 8px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .nav-card:hover {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-        .cmd-btn {
-            width: 100%;
-            text-align: left;
-            padding: 8px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.03);
-            border-radius: 6px;
-            font-size: 10px;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .cmd-btn:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.1);
-        }
-
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+        .node-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.4);
+            background: rgba(59, 130, 246, 0.03);
         }
     </style>
 </head>
-<body class="relative">
+<body class="min-h-screen">
 
-    <!-- The Game Embed -->
-    <div id="gameContainer" class="game-container">
-        <iframe src="https://bloxd.io" id="gameFrame" title="Bloxd.io" allow="fullscreen" class="w-full h-full border-none"></iframe>
-    </div>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-black/80 backdrop-blur-xl px-8 py-5 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg shadow-lg shadow-blue-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <h1 class="text-xl font-extrabold tracking-tighter text-white">Bloxd<span class="text-blue-500">Center</span></h1>
+        </div>
 
-    <!-- UI Controls (Top Right) -->
-    <div class="absolute top-3 right-3 z-50 flex gap-2">
-        <button onclick="changeServer()" class="bg-black/40 text-white px-3 py-1.5 rounded-lg border border-white/5 text-[10px] font-bold hover:bg-white/10 transition backdrop-blur-md flex items-center gap-2">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-            REFRESH
-        </button>
-        <button onclick="togglePanel()" class="bg-blue-600/90 text-white px-4 py-1.5 rounded-lg text-xs font-bold glow-button flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-            MENU
-        </button>
-    </div>
+        <div class="hidden md:flex items-center gap-10 text-[11px] font-bold uppercase tracking-[0.2em]">
+            <button onclick="switchTab('schematics')" class="nav-link nav-active py-2" id="nav-schematics">Schematics</button>
+            <button onclick="switchTab('codes')" class="nav-link text-slate-500 hover:text-white transition py-2" id="nav-codes">Codes</button>
+            <button onclick="switchTab('submit')" class="nav-link text-slate-500 hover:text-white transition py-2" id="nav-submit">Upload</button>
+        </div>
 
-    <!-- Bottom Interface -->
-    <div class="absolute bottom-0 left-0 w-full z-20 pointer-events-none">
-        <div class="announcement-ticker">
-            <div class="ticker-content">
-                INSTANT BOOT ACTIVE • LOADING SCREEN REMOVED • CUSTOM THEMES UNLOCKED • SOCIAL HUB ENABLED • FPS BOOST v5 • 
+        <div class="flex items-center gap-3">
+            <!-- No status tags -->
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="pt-32 pb-24 px-8 max-w-7xl mx-auto">
+        
+        <!-- Tab: Schematics -->
+        <div id="schematics" class="tab-content active animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="schematic-container">
+                <!-- Injected via JS -->
+            </div>
+            <div id="schematic-empty" class="hidden py-32 text-center border-2 border-dashed border-white/5 rounded-3xl bg-white/[0.01]">
+                <p class="text-slate-600 font-bold uppercase tracking-widest text-xs italic">No schematics currently stored.</p>
             </div>
         </div>
-        <div class="status-bar flex items-center justify-between px-4">
-            <div class="flex items-center gap-4 text-[9px] font-mono font-bold">
-                <div class="flex items-center gap-1.5">
-                    <span class="opacity-30 uppercase">FPS:</span>
-                    <span id="fpsCounter" class="text-blue-400">--</span>
-                </div>
-                <div class="flex items-center gap-1.5">
-                    <span class="opacity-30 uppercase">ENGINE:</span>
-                    <span class="text-green-500">BLOXD2-DIRECT</span>
-                </div>
+
+        <!-- Tab: Codes -->
+        <div id="codes" class="tab-content animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="code-container">
+                <!-- Injected via JS -->
             </div>
-            <div class="text-[8px] font-bold opacity-20 uppercase tracking-[0.4em]">
-                Session for Smith
+            <div id="code-empty" class="hidden py-32 text-center border-2 border-dashed border-white/5 rounded-3xl bg-white/[0.01]">
+                <p class="text-slate-600 font-bold uppercase tracking-widest text-xs italic">No code modules currently stored.</p>
             </div>
         </div>
-    </div>
 
-    <!-- Side Panel -->
-    <div id="sidePanel" class="fixed top-0 right-0 h-full w-80 glass-panel z-40 side-panel-hidden p-6 flex flex-col gap-6 overflow-y-auto">
-        <div class="mt-12">
-            <h2 class="menu-section-title">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/></svg>
-                Engine & Appearance
-            </h2>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center text-[10px] opacity-60">Accent Color:</div>
-                <div class="flex gap-2">
-                    <button onclick="setTheme('#3b82f6')" class="w-6 h-6 rounded-full bg-blue-600 border-2 border-white/20 hover:scale-110 transition"></button>
-                    <button onclick="setTheme('#ef4444')" class="w-6 h-6 rounded-full bg-red-600 border-2 border-white/20 hover:scale-110 transition"></button>
-                    <button onclick="setTheme('#10b981')" class="w-6 h-6 rounded-full bg-emerald-600 border-2 border-white/20 hover:scale-110 transition"></button>
-                    <button onclick="setTheme('#a855f7')" class="w-6 h-6 rounded-full bg-purple-600 border-2 border-white/20 hover:scale-110 transition"></button>
-                    <button onclick="setTheme('#f59e0b')" class="w-6 h-6 rounded-full bg-amber-600 border-2 border-white/20 hover:scale-110 transition"></button>
+        <!-- Tab: Submit -->
+        <div id="submit" class="tab-content animate-in zoom-in-95 duration-300">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-extrabold text-white mb-3 uppercase tracking-tighter">Upload Your Build</h2>
+                    <p class="text-slate-500">Contribute to BloxdCenter by sending your files for verification.</p>
                 </div>
-                <div onclick="applyLagFix()" class="nav-card">
-                    <div class="flex justify-between items-center">
-                        <span class="text-blue-400 font-bold text-[10px]">PURGE MEMORY</span>
-                        <span class="text-[8px] opacity-50">FIX LAG</span>
+
+                <div class="glass rounded-[2rem] p-10 border border-white/10 shadow-2xl">
+                    <div class="grid md:grid-cols-2 gap-12">
+                        <div class="space-y-8">
+                            <div>
+                                <h3 class="text-blue-500 font-black text-xs uppercase tracking-[0.2em] mb-4">Submission Guide</h3>
+                                <ul class="space-y-5">
+                                    <li class="flex gap-4">
+                                        <div class="h-6 w-6 rounded bg-blue-500/10 flex items-center justify-center text-[10px] font-bold text-blue-400 border border-blue-500/20">01</div>
+                                        <p class="text-sm text-slate-300">Prepare your <span class="text-white font-bold">.txt code</span> or schematic file.</p>
+                                    </li>
+                                    <li class="flex gap-4">
+                                        <div class="h-6 w-6 rounded bg-blue-500/10 flex items-center justify-center text-[10px] font-bold text-blue-400 border border-blue-500/20">02</div>
+                                        <p class="text-sm text-slate-300">Capture <span class="text-white font-bold">2-4 screenshots</span> of the final build.</p>
+                                    </li>
+                                    <li class="flex gap-4">
+                                        <div class="h-6 w-6 rounded bg-blue-500/10 flex items-center justify-center text-[10px] font-bold text-blue-400 border border-blue-500/20">03</div>
+                                        <p class="text-sm text-slate-300">Email all assets to the official email below.</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col justify-center items-center p-8 bg-blue-600/5 rounded-2xl border border-blue-500/10">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500 mb-6"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M16 19h6"/><path d="M19 16v6"/></svg>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Upload Email</p>
+                            <a href="mailto:shiftrandom7@gmail.com" class="text-lg font-bold text-white hover:text-blue-400 transition underline underline-offset-8 decoration-blue-500/30">shiftrandom7@gmail.com</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </main>
 
-        <div>
-            <h2 class="menu-section-title">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-                Quick Nav (Direct)
-            </h2>
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="navTo('survival')" class="cmd-btn"><span>Survival</span></button>
-                <button onclick="navTo('creative')" class="cmd-btn"><span>Creative</span></button>
-                <button onclick="navTo('peaceful')" class="cmd-btn"><span>Peaceful</span></button>
-                <button onclick="navTo('worlds')" class="cmd-btn"><span>Worlds</span></button>
-            </div>
+    <!-- Footer -->
+    <footer class="fixed bottom-0 w-full py-5 px-10 border-t border-white/5 bg-black/80 backdrop-blur-md flex justify-between items-center z-50">
+        <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">© 2026 BLOXDCENTER HUB</p>
+        <div class="flex gap-6">
+             <span class="text-[9px] font-black text-blue-500/50 uppercase tracking-widest">Community Repository</span>
         </div>
-
-        <div>
-            <h2 class="menu-section-title">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                Social Hub
-            </h2>
-            <div class="space-y-1.5">
-                <button onclick="sendCmd('/msg ')" class="cmd-btn"><span>Quick Message</span><span class="opacity-30">/msg</span></button>
-                <button onclick="sendCmd('/friend add ')" class="cmd-btn"><span>Add Friend</span><span class="opacity-30">/f add</span></button>
-                <button onclick="sendCmd('/party invite ')" class="cmd-btn"><span>Invite to Party</span><span class="opacity-30">/p</span></button>
-            </div>
-        </div>
-
-        <div>
-            <h2 class="menu-section-title">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                BloxdCode AI v4
-            </h2>
-            <div class="bg-black/40 border border-white/5 rounded-xl p-3">
-                <div class="max-h-24 overflow-y-auto text-[10px] mb-3 space-y-2 font-mono" id="aiHistory">
-                    <div class="text-blue-300 opacity-60">Instant boot enabled. Ask me anything about the game.</div>
-                </div>
-                <div class="flex gap-2">
-                    <input type="text" id="aiInput" placeholder="How do I craft..." class="flex-1 bg-black/60 border border-white/10 rounded-lg px-2 py-1.5 text-[10px] outline-none focus:border-blue-500">
-                    <button onclick="askAI()" class="bg-blue-600 p-1.5 rounded-lg">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-auto pt-4 border-t border-white/5">
-            <button onclick="window.open('https://bloxd.io','_blank')" class="w-full bg-white/5 hover:bg-white/10 py-2 rounded text-[9px] font-bold transition mb-2">EXTERNAL WINDOW</button>
-            <div class="flex justify-between items-center text-[9px] opacity-40 uppercase font-bold tracking-widest">
-                <span>Client Status</span>
-                <span class="text-green-500">Online</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- UI Feedback Alert -->
-    <div id="alertBox" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-2xl translate-y-20 opacity-0 transition-all duration-300 z-50">
-        Action Successful
-    </div>
+    </footer>
 
     <script>
-        function togglePanel() {
-            document.getElementById('sidePanel').classList.toggle('side-panel-hidden');
-        }
+        const schematicData = [];
+        const codeData = [];
 
-        function setTheme(color) {
-            document.documentElement.style.setProperty('--primary', color);
-            document.documentElement.style.setProperty('--primary-glow', color + '80');
-            const btns = document.querySelectorAll('.bg-blue-600');
-            btns.forEach(b => {
-                b.style.backgroundColor = color;
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.classList.remove('nav-active', 'text-white');
+                l.classList.add('text-slate-500');
             });
+            const activeNav = document.getElementById('nav-' + tabId);
+            activeNav.classList.add('nav-active', 'text-white');
+            activeNav.classList.remove('text-slate-500');
         }
 
-        function applyLagFix() {
-            const alert = document.getElementById('alertBox');
-            alert.innerText = "Memory Cleaned. Latency Dropped.";
-            alert.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => alert.classList.add('translate-y-20', 'opacity-0'), 2000);
-        }
-
-        function sendCmd(cmd) {
-            const el = document.createElement('textarea');
-            el.value = cmd;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
+        function renderList(data, containerId, emptyId) {
+            const container = document.getElementById(containerId);
+            const empty = document.getElementById(emptyId);
             
-            const alert = document.getElementById('alertBox');
-            alert.innerText = `COPIED: ${cmd}`;
-            alert.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => alert.classList.add('translate-y-20', 'opacity-0'), 1500);
+            if (data.length === 0) {
+                empty.classList.remove('hidden');
+                container.innerHTML = '';
+                return;
+            }
+
+            empty.classList.add('hidden');
+            container.innerHTML = data.map((item, index) => `
+                <div class="node-card glass p-8 rounded-3xl border border-white/5 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                    </div>
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-[9px] font-black bg-blue-500 text-white px-2 py-1 rounded uppercase tracking-widest">Entry #${String(index + 1).padStart(3, '0')}</span>
+                    </div>
+                    <h3 class="text-2xl font-black text-white mb-2 uppercase tracking-tighter">${item.name}</h3>
+                    <p class="text-slate-500 text-sm mb-8 leading-relaxed">${item.desc}</p>
+                    <div class="flex items-center justify-between mt-auto pt-6 border-t border-white/5">
+                        <span class="text-[10px] font-bold text-slate-400">BY ${item.author.toUpperCase()}</span>
+                        <button onclick="downloadFile('${item.name}', '${item.code}')" class="p-3 bg-white/5 hover:bg-blue-600 text-white rounded-xl transition-all shadow-lg hover:shadow-blue-600/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function navTo(mode) {
-            const frame = document.getElementById('gameFrame');
-            // Simplified navigation logic
-            frame.src = `https://bloxd.io/?game=${mode}`;
-            
-            const alert = document.getElementById('alertBox');
-            alert.innerText = `Switching to ${mode}...`;
-            alert.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => alert.classList.add('translate-y-20', 'opacity-0'), 2000);
+        function downloadFile(name, content) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${name.replace(/\s+/g, '_').toLowerCase()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
         }
 
-        function changeServer() {
-            const frame = document.getElementById('gameFrame');
-            const oldSrc = frame.src;
-            frame.src = "about:blank";
-            setTimeout(() => { frame.src = oldSrc; }, 50);
-        }
-
-        function askAI() {
-            const input = document.getElementById('aiInput');
-            const history = document.getElementById('aiHistory');
-            if(!input.value) return;
-
-            const userMsg = document.createElement('div');
-            userMsg.className = "text-white/30 text-right";
-            userMsg.innerText = input.value;
-            history.appendChild(userMsg);
-
-            const aiMsg = document.createElement('div');
-            aiMsg.className = "text-blue-400 bg-blue-400/5 p-2 rounded border border-blue-400/10 mt-1";
-            aiMsg.innerText = "Processing request... For crafting, open your inventory and check the recipes tab!";
-            
-            history.appendChild(aiMsg);
-            input.value = "";
-            history.scrollTop = history.scrollHeight;
-        }
-
-        let lastTime = performance.now();
-        function updateFPS() {
-            const now = performance.now();
-            const delta = now - lastTime;
-            lastTime = now;
-            const fps = Math.round(1000 / delta);
-            document.getElementById('fpsCounter').innerText = fps;
-            requestAnimationFrame(updateFPS);
-        }
-
-        window.onload = updateFPS;
-        document.getElementById('aiInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') askAI();
-        });
+        window.onload = () => {
+            renderList(schematicData, 'schematic-container', 'schematic-empty');
+            renderList(codeData, 'code-container', 'code-empty');
+        };
     </script>
 </body>
 </html>

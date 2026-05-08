@@ -2,200 +2,101 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BloxdCenter | Build Repository</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cubic - A Editor</title>
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #040406;
-            color: #d1d5db;
-            overflow-x: hidden;
+        /* Reset and Immersive Layout */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .glass {
-            background: rgba(15, 15, 20, 0.7);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* No scrollbars on the parent page */
+            background-color: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .tab-content {
-            display: none;
+
+        /* Container to hold the embedded site */
+        .site-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
         }
-        .tab-content.active {
+
+        /* The iframe embedding the Base44 site */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
             display: block;
         }
-        .nav-active {
-            color: #60a5fa;
-            border-bottom: 2px solid #3b82f6;
+
+        /* Fullscreen button styling */
+        .fullscreen-btn {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+            user-select: none;
         }
-        .node-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+        .fullscreen-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
         }
-        .node-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(59, 130, 246, 0.4);
-            background: rgba(59, 130, 246, 0.03);
+
+        /* Simple loading text */
+        .loading-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #555;
+            z-index: -1;
         }
     </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-black/80 backdrop-blur-xl px-8 py-5 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div class="p-2 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg shadow-lg shadow-blue-500/20">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-            </div>
-            <h1 class="text-xl font-extrabold tracking-tighter text-white">Bloxd<span class="text-blue-500">Center</span></h1>
-        </div>
-
-        <div class="hidden md:flex items-center gap-10 text-[11px] font-bold uppercase tracking-[0.2em]">
-            <button onclick="switchTab('schematics')" class="nav-link nav-active py-2" id="nav-schematics">Schematics</button>
-            <button onclick="switchTab('codes')" class="nav-link text-slate-500 hover:text-white transition py-2" id="nav-codes">Codes</button>
-            <button onclick="switchTab('submit')" class="nav-link text-slate-500 hover:text-white transition py-2" id="nav-submit">Upload</button>
-        </div>
-
-        <div class="flex items-center gap-3">
-            <!-- No status tags -->
-        </div>
-    </nav>
-
-    <!-- Main Container -->
-    <main class="pt-32 pb-24 px-8 max-w-7xl mx-auto">
+    <div class="site-wrapper">
+        <div class="loading-text">Loading Cubic Editor...</div>
         
-        <!-- Tab: Schematics -->
-        <div id="schematics" class="tab-content active animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="schematic-container">
-                <!-- Injected via JS -->
-            </div>
-            <div id="schematic-empty" class="hidden py-32 text-center border-2 border-dashed border-white/5 rounded-3xl bg-white/[0.01]">
-                <p class="text-slate-600 font-bold uppercase tracking-widest text-xs italic">No schematics currently stored.</p>
-            </div>
-        </div>
+        <!-- Updated URL to the base44.app domain -->
+        <iframe 
+            src="https://cubiceditor.base44.app/" 
+            allow="autoplay; fullscreen; keyboard; clipboard-read; clipboard-write"
+            allowfullscreen>
+        </iframe>
+    </div>
 
-        <!-- Tab: Codes -->
-        <div id="codes" class="tab-content animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="code-container">
-                <!-- Injected via JS -->
-            </div>
-            <div id="code-empty" class="hidden py-32 text-center border-2 border-dashed border-white/5 rounded-3xl bg-white/[0.01]">
-                <p class="text-slate-600 font-bold uppercase tracking-widest text-xs italic">No code modules currently stored.</p>
-            </div>
-        </div>
-
-        <!-- Tab: Submit -->
-        <div id="submit" class="tab-content animate-in zoom-in-95 duration-300">
-            <div class="max-w-3xl mx-auto">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-extrabold text-white mb-3 uppercase tracking-tighter">Upload Your Build</h2>
-                    <p class="text-slate-500">Contribute to BloxdCenter by sending your files for verification.</p>
-                </div>
-
-                <div class="glass rounded-[2rem] p-10 border border-white/10 shadow-2xl">
-                    <div class="grid md:grid-cols-2 gap-12">
-                        <div class="space-y-8">
-                            <div>
-                                <h3 class="text-blue-500 font-black text-xs uppercase tracking-[0.2em] mb-4">Submission Guide</h3>
-                                <ul class="space-y-5">
-                                    <li class="flex gap-4">
-                                        <div class="h-6 w-6 rounded bg-blue-500/10 flex items-center justify-center text-[10px] font-bold text-blue-400 border border-blue-500/20">01</div>
-                                        <p class="text-sm text-slate-300">Prepare your <span class="text-white font-bold">.txt code</span> or schematic file.</p>
-                                    </li>
-                                    <li class="flex gap-4">
-                                        <div class="h-6 w-6 rounded bg-blue-500/10 flex items-center justify-center text-[10px] font-bold text-blue-400 border border-blue-500/20">02</div>
-                                        <p class="text-sm text-slate-300">Capture <span class="text-white font-bold">2-4 screenshots</span> of the final build.</p>
-                                    </li>
-                                    <li class="flex gap-4">
-                                        <div class="h-6 w-6 rounded bg-blue-500/10 flex items-center justify-center text-[10px] font-bold text-blue-400 border border-blue-500/20">03</div>
-                                        <p class="text-sm text-slate-300">Email all assets to the official email below.</p>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col justify-center items-center p-8 bg-blue-600/5 rounded-2xl border border-blue-500/10">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500 mb-6"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M16 19h6"/><path d="M19 16v6"/></svg>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Upload Email</p>
-                            <a href="mailto:shiftrandom7@gmail.com" class="text-lg font-bold text-white hover:text-blue-400 transition underline underline-offset-8 decoration-blue-500/30">shiftrandom7@gmail.com</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="fixed bottom-0 w-full py-5 px-10 border-t border-white/5 bg-black/80 backdrop-blur-md flex justify-between items-center z-50">
-        <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">© 2026 BLOXDCENTER HUB</p>
-        <div class="flex gap-6">
-             <span class="text-[9px] font-black text-blue-500/50 uppercase tracking-widest">Community Repository</span>
-        </div>
-    </footer>
+    <!-- Toggle button to make the experience fully immersive -->
+    <button class="fullscreen-btn" onclick="toggleFS()">Toggle Fullscreen</button>
 
     <script>
-        const schematicData = [];
-        const codeData = [];
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            
-            document.querySelectorAll('.nav-link').forEach(l => {
-                l.classList.remove('nav-active', 'text-white');
-                l.classList.add('text-slate-500');
-            });
-            const activeNav = document.getElementById('nav-' + tabId);
-            activeNav.classList.add('nav-active', 'text-white');
-            activeNav.classList.remove('text-slate-500');
-        }
-
-        function renderList(data, containerId, emptyId) {
-            const container = document.getElementById(containerId);
-            const empty = document.getElementById(emptyId);
-            
-            if (data.length === 0) {
-                empty.classList.remove('hidden');
-                container.innerHTML = '';
-                return;
+        function toggleFS() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(e => {
+                    console.log("Fullscreen request denied.");
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
             }
-
-            empty.classList.add('hidden');
-            container.innerHTML = data.map((item, index) => `
-                <div class="node-card glass p-8 rounded-3xl border border-white/5 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-                    </div>
-                    <div class="flex justify-between items-center mb-6">
-                        <span class="text-[9px] font-black bg-blue-500 text-white px-2 py-1 rounded uppercase tracking-widest">Entry #${String(index + 1).padStart(3, '0')}</span>
-                    </div>
-                    <h3 class="text-2xl font-black text-white mb-2 uppercase tracking-tighter">${item.name}</h3>
-                    <p class="text-slate-500 text-sm mb-8 leading-relaxed">${item.desc}</p>
-                    <div class="flex items-center justify-between mt-auto pt-6 border-t border-white/5">
-                        <span class="text-[10px] font-bold text-slate-400">BY ${item.author.toUpperCase()}</span>
-                        <button onclick="downloadFile('${item.name}', '${item.code}')" class="p-3 bg-white/5 hover:bg-blue-600 text-white rounded-xl transition-all shadow-lg hover:shadow-blue-600/20">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
         }
-
-        function downloadFile(name, content) {
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${name.replace(/\s+/g, '_').toLowerCase()}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-        }
-
-        window.onload = () => {
-            renderList(schematicData, 'schematic-container', 'schematic-empty');
-            renderList(codeData, 'code-container', 'code-empty');
-        };
     </script>
 </body>
 </html>
